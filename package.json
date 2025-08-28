@@ -1,15 +1,28 @@
 {
-  "private": true,
-  "name": "dropin-template",
+  "name": "@kiran3836/product-badge-dropin",
   "version": "0.1.0",
+  "description": "Custom Product Badge Drop-in for Adobe Storefront",
+  "author": "Kiran",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": "^20.0.0 || ^22.0.0"
   },
   "files": [
-    "*"
+    "dist"
   ],
   "sideEffects": false,
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./*": "./dist/*"
+  },
   "scripts": {
     "dev": "concurrently 'npm run storybook' 'npm run serve'",
     "storybook": "elsie storybook",
@@ -20,7 +33,7 @@
     "analyze": "ANALYZE=true elsie build"
   },
   "dependencies": {
-    "@adobe-commerce/elsie": "^1.4.0",
+    "@adobe-commerce/elsie": "^1.4.1",
     "@adobe-commerce/event-bus": "~1.0.0",
     "@adobe-commerce/fetch-graphql": "~1.0.1",
     "@adobe-commerce/storefront-design": "~1.0.0",

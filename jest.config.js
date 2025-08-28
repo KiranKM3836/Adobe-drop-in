@@ -5,7 +5,7 @@ module.exports = {
 
   setupFiles: [
     ...baseConfig.setupFiles,
-    '<rootDir>/tests/__mocks__/browserMocks.ts',
+    './home/kirankumarm/Desktop/AEM_EDS/Aem_Drop_In/Adobe-drop-in/tests/__mocks__/browserMocks.ts',
   ],
 
   coverageThreshold: {

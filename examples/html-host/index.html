@@ -24,10 +24,33 @@
       {
         "imports": {
           "@dropins/tools/": "https://cdn.jsdelivr.net/npm/@dropins/tools/",
-          "my-pkg/": "http://localhost:3002/"
+          "product-badge-dropin/": "http://localhost:3003/"
         }
       }
-    </script>
+      </script>
+      <script type="module">
+          import { render as provider } from 'product-badge-dropin/render.js';
+          import { ProductBadgeContainer } from 'product-badge-dropin/containers/ProductBadgeContainer.js';
+          import { events } from '@dropins/tools/event-bus.js';
+          import * as mesh from '@dropins/tools/fetch-graphql.js';
+
+          // 👉 Set endpoint from your .env (replace with your actual endpoint)
+          mesh.setEndpoint("https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql");
+
+          // Get container slot
+          const $container = document.getElementById('product-badge');
+
+          // Render drop-in container
+          provider.render(ProductBadgeContainer, {
+            sku: "24-MB01"   // 👈 pass sample sku
+          })($container);
+
+          // Debug log events
+          events.on("product:loaded", (data) => {
+            console.log("Product data received:", data);
+          });
+        </script>
+
 
     <style>
       /* Base Design System Tokens */
@@ -40,7 +63,8 @@
       
       // Import API functions to use with action buttons
       // Replace `my-pkg` with `@dropins/YourDropin`
-      import * as pkg from 'my-pkg/api.js';
+      import * as pkg from 'product-badge-dropin/api.js';
+  
 
       // The event bus is a core communication tool for all dropins.
       // They subscribe and publish to events to talk to each other without direct coupling.
@@ -52,15 +76,15 @@
       // GraphQL Client
       import * as mesh from '@dropins/tools/fetch-graphql.js';
 
-      // import { render as provider } from 'my-pkg/render.js';
-      // import <Container> from 'my-pkg/containers/<Container>.js';
+      import { render as provider } from 'product-badge-dropin/render.js';
+      import ProductBadgeContainer from 'product-badge-dropin/containers/ProductBadgeContainer.js';
 
       // Initialize GraphQl Client (Mesh)
       // Mesh Endpoint
-      mesh.setEndpoint('mock-endpoint');
+      mesh.setEndpoint('https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql');
 
       // Initialize GraphQl Client (PKG)
-      // pkg.setEndpoint(...);
+      pkg.setEndpoint('https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql');
 
       // Registers a new initializer. If the initializers have already been mounted, 
       // it immediately binds the event listeners and initializes the API for the new initializer.
@@ -70,7 +94,8 @@
       // This involves binding the event listeners and initializing the APIs for each initializer, in that order.
       initializers.mount();
 
-      // provider.render(<Container>)(document.getElementById('my-container'));
+      provider.render(ProductBadgeContainer)(document.getElementById('my-container'));
+      console.log(pkg,"pkg")
     </script>
 
     <div id="app">
@@ -93,8 +118,7 @@
 
         <div class="containers">
           <h2 class="heading">Frontend Containers</h2>
-
-          <div id="my-container" class="container"></div>
+          <div id="product-badge" class="container"></div>
         </div>
       </div>
     </div>
