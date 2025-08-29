@@ -38,6 +38,7 @@
     "@adobe-commerce/fetch-graphql": "~1.0.1",
     "@adobe-commerce/storefront-design": "~1.0.0",
     "@dropins/build-tools": "~1.0.1",
+    "@dropins/tools": "^1.4.1",
     "preact": "~10.22.1"
   },
   "devDependencies": {
