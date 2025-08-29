@@ -60,43 +60,33 @@
 
   <body>
     <script type="module">
-      
-      // Import API functions to use with action buttons
-      // Replace `my-pkg` with `@dropins/YourDropin`
-      import * as pkg from 'product-badge-dropin/api.js';
-  
+  import { events } from '@dropins/tools/event-bus.js';
+  import { getProductMetadata } from 'product-badge-dropin/api.js';
+  import { render as provider } from 'product-badge-dropin/render.js';
+  import ProductBadgeContainer from 'product-badge-dropin/containers/ProductBadgeContainer.js';
+  import * as mesh from '@dropins/tools/fetch-graphql.js';
 
-      // The event bus is a core communication tool for all dropins.
-      // They subscribe and publish to events to talk to each other without direct coupling.
-      import { events } from '@dropins/tools/event-bus.js';
+  mesh.setEndpoint("https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql");
 
-      // Initializer
-      import { initializers } from '@dropins/tools/initializer.js';
+  // Render dropin
+  provider.render(ProductBadgeContainer, { sku: "24-MB01" })(document.getElementById('product-badge'));
 
-      // GraphQL Client
-      import * as mesh from '@dropins/tools/fetch-graphql.js';
+  // provider.render(ProductBadgeContainer, { sku: "24-MB02" })(document.getElementById('product-badge'));
 
-      import { render as provider } from 'product-badge-dropin/render.js';
-      import ProductBadgeContainer from 'product-badge-dropin/containers/ProductBadgeContainer.js';
+  // Wire up button
+  document.getElementById('action-1').addEventListener('click', async () => {
+    console.log("action-1 clicked");
+    const data = await getProductMetadata("24-MB01"); // In Stock
+    // const data = await getProductMetadata("24-MB02"); // Out of Stock
+    events.emit("product:loaded", data);
+    console.log("Metadata:", data);
+  });
 
-      // Initialize GraphQl Client (Mesh)
-      // Mesh Endpoint
-      mesh.setEndpoint('https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql');
-
-      // Initialize GraphQl Client (PKG)
-      pkg.setEndpoint('https://na1-sandbox.api.commerce.adobe.com/GMBkaBQSumFG4qaxU86h3L/graphql');
-
-      // Registers a new initializer. If the initializers have already been mounted, 
-      // it immediately binds the event listeners and initializes the API for the new initializer.
-      initializers.register(pkg.initialize);
-
-      // Mounts all registered initializers. 
-      // This involves binding the event listeners and initializing the APIs for each initializer, in that order.
-      initializers.mount();
-
-      provider.render(ProductBadgeContainer)(document.getElementById('my-container'));
-      console.log(pkg,"pkg")
-    </script>
+  // Event bus example
+  events.on("product:loaded", (data) => {
+    document.getElementById('data').innerText = JSON.stringify(data, null, 2);
+  });
+</script>
 
     <div id="app">
       <h1 id="title">💻</h1>
@@ -112,7 +102,7 @@
           </fieldset>
 
           <code data-label="fetchGraphQl">
-            <pre id="data">⏳ Loading...</pre>
+            <pre id="data">No Data</pre>
           </code>
         </div>
 
